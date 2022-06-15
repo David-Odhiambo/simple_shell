@@ -48,7 +48,7 @@ typedef struct env_path
 int (*_builtin(char *cmd))();
 int _exit_builtin(char **tokens, list_t *linkedlist_path, char *buffer);
 int _cd(char **tokens);
-int cd_shell(data_shell *datash)
+int cd_shell(data_shell *datash);
 int _alias(void);
 int _history(void);
 
