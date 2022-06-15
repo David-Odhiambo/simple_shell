@@ -1,84 +1,97 @@
 #ifndef MAIN_H
 #define MAIN_H
 
-#include <stdio.h>
 #include <stdlib.h>
+#include <stddef.h>
+#include <stdio.h>
 #include <string.h>
 #include <unistd.h>
-#include <sys/stat.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <sys/wait.h>
+#include <wait.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <dirent.h>
+#include <signal.h>
 
-#define BUFFER 1024
-#define TRUE 1
-#define PROMPT "$ "
-/* error strings */
-#define ERR_MALLOC "Unable to malloc space\n"
-#define ERR_FORK "Unable to fork and create child process\n"
-#define ERR_PATH "No such file or directory\n"
+#define BUFSIZE 1024
 extern char **environ;
 
 /**
- * struct list_s - linked list of variables
- * @value: value
- * @next: pointer to next node
- *
- * Description: generic linked list struct for variables.
-**/
-typedef struct list_s
+  * struct builtin_commands - stuct for function pointers to builtin commands
+  * @cmd_str: commands (env, cd, alias, history)
+  * @fun: function
+  */
+typedef struct builtin_commands
 {
-	char *value;
-	struct list_s *next;
-} list_s;
+	char *cmd_str;
+	int (*fun)();
+} builtin_t;
+
 
 /**
- * struct built_s - linked list of builtins
- * @name: name of builtin
- * @p: pointer to function
- *
- * Description: struct for builtin functions.
-**/
-typedef struct built_s
+ * struct env_path - linked list for environmental variables
+ * @str: holds environmental variable string
+ * @len: holds the length of the string
+ * @next: points to next node
+ */
+typedef struct env_path
 {
-	char *name;
-	int (*p)(void);
-} built_s;
+	char *str;
+	unsigned int len;
+	struct env_path *next;
 
-void prompt(int fd, struct stat buf);
-char *_getline(FILE *fp);
-char **tokenizer(char *str);
-char *_which(char *command, char *fullpath, char *path);
-int child(char *fullpath, char **tokens);
-void errors(int error);
+} list_t;
 
-/* utility functions */
-void _puts(char *str);
-int _strlen(char *s);
-int _strcmp(char *name, char *variable, unsigned int length);
-int _strncmp(char *name, char *variable, unsigned int length);
+/* In builtin.c */
+int (*_builtin(char *cmd))();
+int _exit_builtin(char **tokens, list_t *linkedlist_path, char *buffer);
+int _cd(char **tokens);
+int _alias(void);
+int _history(void);
+
+/* env_func.c */
+char *_getenv(char *name);
+int _setenv(char **tokens);
+int _unsetenv(char **tokens);
+int current_env(char **tokens, list_t *environment);
+
+/* linkedlist.c */
+list_t *add_node(list_t **head, char *str, unsigned int len);
+list_t *path_list(void);
+list_t *environ_list(void);
+char *_which(char *cmd, list_t *linkedlist_path);
+void free_list(list_t *head);
+
+/* execute.c */
+void execute(char *argv[], list_t *linkedlist_path);
+char **split_line(char *line);
+
+/* memory.c */
+void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size);
+void free_double_ptr(char **str);
+void __exit(char **str, list_t *env);
+
+/* strings2.c*/
 char *_strcpy(char *dest, char *src);
+int _putchar(char c);
+void _puts(char *str);
+int _isnumber(int c);
+int _strlen(char *s);
 
-/* cd.c */
-void cd_dot(data_shell *datash);
-void cd_to(data_shell *datash);
-void cd_previous(data_shell *datash);
-void cd_to_home(data_shell *datash);
+/* strtok.c */
+char *_strchr(char *s, char c);
+unsigned int _strspn(char *s, char *accept);
+char *_strpbrk(char *s, char *delims);
+char *_strtok(char *s, char *delim);
 
-/* cd_shell.c */
-int cd_shell(data_shell *datash);
+/* string1.c */
+int _strcmp(char *s1, char *s2);
+int _strncmp(char *s1, char *s2, size_t bytes);
+char *_strcat(char *dest, char *src);
+char *_strdup(char *src);
+int _atoi(char *s);
 
-/* prototypes for builtins */
-int shell_env(void);
-int shell_exit(void);
-int builtin_execute(char **tokens);
-int shell_num_builtins(built_s builtin[]);
 
-/* prototypes for the helper functions for path linked list */
-char *_getenv(const char *name);
-char **copy_env(char **environ_copy, unsigned int environ_length);
-list_s *pathlist(char *variable, list_s *head);
-
-/* prototypes for free functions */
-void free_all(char **tokens, char *path, char *line, char *fullpath, int flag);
-void free_dp(char **array, unsigned int length);
-#endif /* MAIN_H */
+#endif
