@@ -52,6 +52,12 @@ int cd_shell(data_shell *datash);
 int _alias(void);
 int _history(void);
 
+/* cd.c */
+void cd_dot(data_shell *datash);
+void cd_to(data_shell *datash);
+void cd_previous(data_shell *datash);
+void cd_to_home(data_shell *datash);
+
 /* env_func.c */
 char *_getenv(char *name);
 int _setenv(char **tokens);
