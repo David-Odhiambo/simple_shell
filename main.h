@@ -80,7 +80,6 @@ void _puts(char *str);
 int _isnumber(int c);
 int _strlen(char *s);
 
-<<<<<<< HEAD
 /* strtok.c */
 char *_strchr(char *s, char c);
 unsigned int _strspn(char *s, char *accept);
@@ -96,20 +95,3 @@ int _atoi(char *s);
 
 
 #endif
-=======
-/* prototypes for builtins */
-int shell_env(void);
-int shell_exit(void);
-int builtin_execute(char **tokens);
-int shell_num_builtins(built_s builtin[]);
-
-/* prototypes for the helper functions for path linked list */
-char *_getenv(const char *name);
-char **copy_env(char **environ_copy, unsigned int environ_length);
-list_s *pathlist(char *variable, list_s *head);
-
-/* prototypes for free functions */
-void free_all(char **tokens, char *path, char *line, char *fullpath, int flag);
-void free_dp(char **array, unsigned int length);
-#endif /* MAIN_H */
->>>>>>> b0bff8a3fcfadc020c09d30d078df29b8d581ffb
