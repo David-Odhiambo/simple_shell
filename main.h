@@ -58,6 +58,15 @@ int _strcmp(char *name, char *variable, unsigned int length);
 int _strncmp(char *name, char *variable, unsigned int length);
 char *_strcpy(char *dest, char *src);
 
+/* cd.c */
+void cd_dot(data_shell *datash);
+void cd_to(data_shell *datash);
+void cd_previous(data_shell *datash);
+void cd_to_home(data_shell *datash);
+
+/* cd_shell.c */
+int cd_shell(data_shell *datash);
+
 /* prototypes for builtins */
 int shell_env(void);
 int shell_exit(void);
